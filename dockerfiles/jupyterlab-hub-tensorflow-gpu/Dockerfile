@@ -19,6 +19,15 @@ RUN apt-get update && apt-get -yq dist-upgrade \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
+#install bazel for later
+RUN apt-get update && apt-get install openjdk-8-jdk && \
+    echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" | sudo tee /etc/apt/sources.list.d/bazel.list && \
+    curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add - && \
+    apt-get update && apt-get install bazel && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
@@ -151,7 +160,16 @@ RUN conda config --add channels conda-forge && \
     conda create --quiet --yes -n java_env scijava-jupyter-kernel
 RUN bash -c "source activate java_env" && \
     bash -c "source activate ipykernel_py2"
-# and finally tensorflow with gpu support
-RUN python3 -m pip install tensorflow==1.5 tensorflow-gpu==1.5 numpy==1.14
+
+
+# specific numpy version for tensorflow
+RUN python3 -m pip install numpy==1.14
+
+#build tensorflow 1.5 from sources
+#RUN git clone https://github.com/tensorflow/tensorflow && \
+#    cd tensorflow && \
+#    git checkout r1.5 && \
+
+
 RUN jupyter kernelspec list
 
