@@ -189,7 +189,7 @@ RUN python3 -m pip install numpy==1.14
 # Build tensorflow 1.5 from sources
 
 # Set up Bazel.
-
+USER root
 # Running bazel inside a `docker build` command causes trouble, cf:
 #   https://github.com/bazelbuild/bazel/issues/134
 # The easiest solution is to set up a bazelrc file forcing --batch.
@@ -235,4 +235,5 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
     rm -rf /root/.cache
 # Clean up pip wheel and Bazel cache when done.
 
+USER $NB_UID
 
