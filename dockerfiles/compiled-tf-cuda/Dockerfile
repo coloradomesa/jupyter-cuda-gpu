@@ -165,23 +165,15 @@ RUN conda install --quiet --yes \
     rm -rf $CONDA_DIR/share/jupyter/lab/staging && \
     rm -rf /home/$NB_USER/.cache/yarn && \
     rm -rf /home/$NB_USER/.node-gyp
-RUN python3 -m pip install jupyter_contrib_nbextensions
 RUN python3 -m pip install git+https://github.com/data-8/nbgitpuller \
 	plotly
 # jupyterlab extensions
 RUN jupyter labextension install @jupyterlab/hub-extension && \
     jupyter labextension install @jupyter-widgets/jupyterlab-manager
-# activation
-RUN jupyter lab build
 
-# install or activate other kernels
-RUN conda create --quiet --yes -n ipykernel_py2 python=2 ipykernel && \
-    python -m ipykernel install --user
 RUN conda config --add channels conda-forge && \
     conda create --quiet --yes -n java_env scijava-jupyter-kernel
-RUN bash -c "source activate java_env" && \
-    bash -c "source activate ipykernel_py2"
-
+RUN bash -c "source activate java_env"
 
 # specific numpy version for tensorflow
 RUN python3 -m pip install numpy==1.14
